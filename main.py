@@ -643,7 +643,7 @@ def main():
     alpha, gamma, q_table = initialize_q_learning(operations, parameters_frequency)
 
     start_time = time.time()
-    time_limit = 3600
+    time_limit = 5
     iteration = 0
     max_iterations_without_improvement = 10
 

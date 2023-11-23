@@ -10,11 +10,12 @@ sudo apt-get install -y maven
 sudo apt-get install -y openjdk-11-jdk
 
 # Install Python3
-sudo apt-get install -y python3-pip python3-virtualenv
-virtualenv venv
+# sudo apt-get install -y python3-pip python3-virtualenv
+# virtualenv venv
+python3 -m venv venv
 
 # Install Docker
-sudo apt-get install -y docker.io
+# sudo apt-get install -y docker.io
 
 # Install Dotnet 6
 wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb

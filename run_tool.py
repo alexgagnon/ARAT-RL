@@ -12,7 +12,8 @@ def whitebox(port):
 
 
 def blackbox(swagger, port):
-    timeout = time.time() + 60 * 60 * int(time_limit)
+    timeout = time.time() + 10 * int(time_limit)
+    # timeout = time.time() + 60 * 60 * int(time_limit)
     while time.time() < timeout:
         if tool == "evomaster-blackbox":
             subprocess.run("rm -rf " + service, shell=True)
@@ -30,7 +31,8 @@ def blackbox(swagger, port):
             subprocess.run(run + options, shell=True)
         elif tool == "arat-rl":
             run = "python main.py " + swagger
-            options = " http://localhost:" + str(port)
+            options = " http://localhost:" + str(port) + '/v1'
+            print("Starting: " + run + options)
             subprocess.run(run + options, shell=True)
         elif tool == "no_prioritization":
             run = "python no_prioritization.py " + swagger
@@ -51,6 +53,7 @@ if __name__ == "__main__":
     port = sys.argv[3]
     time_limit = "1"
 
+    print(f"{tool} {service} {port}")
     curdir = os.getcwd()
 
     if tool == "evomaster-whitebox":
@@ -59,7 +62,7 @@ if __name__ == "__main__":
         subprocess.run("python3 run_service.py " + service + " " + str(port) + " blackbox", shell=True)
 
     print("Service started in the background. To check or kill the session, please see README file.")
-    time.sleep(30)
+    time.sleep(5)
 
     if service == "features-service":
         if tool == "evomaster-whitebox":
@@ -132,6 +135,12 @@ if __name__ == "__main__":
             blackbox("file://$(pwd)/spec/project.yaml", 30118)
         else:
             blackbox(os.path.join(curdir, "spec/project.yaml"), 30118)
+
+    elif service == "github":
+        blackbox(os.path.join(curdir, "spec/api.github.com.2022-11-28.json"), 30120)
+
+    elif service == "openapi":
+        blackbox(os.path.join(curdir, "spec/openapi.yaml"), 3002)
 
     print(
         "Experiments are done. We are safely closing the service now. If you want to run more, please check if there is unclosed session. You can check it with 'tmux ls' command. To close the session, you can run 'tmux kill-sess -t {session name}'")
