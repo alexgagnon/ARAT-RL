@@ -14,9 +14,11 @@ def whitebox(port):
         subprocess.run("java -jar evomaster.jar --sutControllerPort " + str(port) + " --maxTime " + time_limit + "h --outputFolder " + service, shell=True)
 
 
-def blackbox(swagger, port):
+def blackbox(swagger, port, service):
     timeout = time.time() + (int(time_limit) * 60)
+    print(f"Timeout: {timeout}")
     while time.time() < timeout:
+        print('here')
         if tool == "evomaster-blackbox":
             subprocess.run("rm -rf " + service, shell=True)
             subprocess.run("java -jar evomaster.jar --blackBox true --bbSwaggerUrl " + swagger + " --bbTargetUrl http://localhost:" + str(port) + " --outputFormat JAVA_JUNIT_4 --maxTime " + time_limit + "h --outputFolder " + service, shell=True)
@@ -33,7 +35,7 @@ def blackbox(swagger, port):
             subprocess.run(run + options, shell=True)
         elif tool == "arat-rl":
             run = "python main.py " + swagger
-            options = " http://localhost:" + str(port)
+            options = " http://localhost:" + str(port) + " " + service
             subprocess.run(run + options, shell=True)
         elif tool == "no_prioritization":
             run = "python no_prioritization.py " + swagger
@@ -69,35 +71,35 @@ if __name__ == "__main__":
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/features.yaml", 30100)
         else:
-            blackbox(os.path.join(curdir, "spec/features.yaml"), 30100)
+            blackbox(os.path.join(curdir, "spec/features.yaml"), 30100, service)
     elif service == "languagetool":
         if tool == "evomaster-whitebox":
             whitebox(30100)
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/languagetool.yaml", 30101)
         else:
-            blackbox(os.path.join(curdir, "spec/languagetool.yaml"), "30101/v2")
+            blackbox(os.path.join(curdir, "spec/languagetool.yaml"), "30101/v2", service)
     elif service == "ncs":
         if tool == "evomaster-whitebox":
             whitebox(30102)
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/ncs.yaml", 30102)
         else:
-            blackbox(os.path.join(curdir, "spec/ncs.yaml"), 30102)
+            blackbox(os.path.join(curdir, "spec/ncs.yaml"), 30102, service)
     elif service == "restcountries":
         if tool == "evomaster-whitebox":
             whitebox(30106)
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/restcountries.yaml", "30106")
         else:
-            blackbox(os.path.join(curdir, "spec/restcountries.yaml"), "30106/rest")
+            blackbox(os.path.join(curdir, "spec/restcountries.yaml"), "30106/rest", service)
     elif service == "scs":
         if tool == "evomaster-whitebox":
             whitebox(30108)
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/scs.yaml", 30108)
         else:
-            blackbox(os.path.join(curdir, "spec/scs.yaml"), 30108)
+            blackbox(os.path.join(curdir, "spec/scs.yaml"), 30108, service)
     elif service == "genome-nexus":
         time.sleep(300)
         if tool == "evomaster-whitebox":
@@ -105,38 +107,40 @@ if __name__ == "__main__":
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/genome.yaml", 30110)
         else:
-            blackbox(os.path.join(curdir, "spec/genome.yaml"), 30110)
+            blackbox(os.path.join(curdir, "spec/genome.yaml"), 30110, service)
     elif service == "person-controller":
         if tool == "evomaster-whitebox":
             whitebox(30111)
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/person.yaml", 30111)
         else:
-            blackbox(os.path.join(curdir, "spec/person.yaml"), 30111)
+            blackbox(os.path.join(curdir, "spec/person.yaml"), 30111, service)
     elif service == "user-management":
         if tool == "evomaster-whitebox":
             whitebox(30116)
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/user.yaml", 30115)
         else:
-            blackbox(os.path.join(curdir, "spec/user.yaml"), 30115)
+            blackbox(os.path.join(curdir, "spec/user.yaml"), 30115, service)
     elif service == "market":
         if tool == "evomaster-whitebox":
             whitebox(30118)
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/market.yaml", 30117)
         else:
-            blackbox(os.path.join(curdir, "spec/market.yaml"), 30117)
+            blackbox(os.path.join(curdir, "spec/market.yaml"), 30117, service)
     elif service == "project-tracking-system":
         if tool == "evomaster-whitebox":
             whitebox(30119)
         elif tool == "evomaster-blackbox":
             blackbox("file://$(pwd)/spec/project.yaml", 30118)
         else:
-            blackbox(os.path.join(curdir, "spec/project.yaml"), 30118)
+            blackbox(os.path.join(curdir, "spec/project.yaml"), 30118, service)
 
     print(
         "Experiments are done. We are safely closing the service now. If you want to run more, please check if there is unclosed session. You can check it with 'tmux ls' command. To close the session, you can run 'tmux kill-sess -t {session name}'")
 
-    time.sleep(180)
+    sleeptime = 180
+    print(f"sleeping {sleeptime}")
+    time.sleep(sleeptime)
     subprocess.run("tmux kill-sess -t " + service, shell=True)

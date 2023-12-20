@@ -29,3 +29,4 @@ faultloadResultsFile.xlsx
 org.jacoco.*
 jacoco_*
 *LOG_PATH*
+node_modules

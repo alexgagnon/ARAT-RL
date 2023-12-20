@@ -689,8 +689,12 @@ def main():
         adapt_testing_strategy(iteration, max_iterations_without_improvement)
         iteration += 1
 
+    with open(f"{name}.json", 'w') as file:
+        json.dump({"q_table": q_table, "q_value": q_value}, file)
+
 if __name__ == "__main__":
     base_url = sys.argv[2]
+    name = sys.argv[3]
     EPSILON = [0.1]
     ss = [None]
     key_matched = {}

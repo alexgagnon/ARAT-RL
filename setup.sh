@@ -62,3 +62,7 @@ wget https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.7/org.jacoco
 wget https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.7/org.jacoco.cli-0.8.7-nodeps.jar
 
 chmod u+x get_cov.sh
+
+# install nodejs and npm dependencies
+sudo snap install node --classic --channel=14
+npm i

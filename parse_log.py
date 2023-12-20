@@ -4,9 +4,10 @@ import json
 import subprocess
 from collections import Counter
 from json import JSONDecodeError
+import sys
 
 
-def count_coverage(path, port):
+def count_coverage(path, port, dir):
     class_files = []
     jacoco_command2 = ''
     subdirs = [x[0] for x in os.walk(path)]
@@ -25,7 +26,7 @@ def count_coverage(path, port):
     jacoco_command2 = jacoco_command2 + ' --csv '
     jacoco_command1 = 'java -jar org.jacoco.cli-0.8.7-nodeps.jar report '
     jacoco_file = port + '.csv'
-    subprocess.run(jacoco_command1 + "jacoco" + port + ".exec" + jacoco_command2 + jacoco_file, shell=True)
+    subprocess.run(jacoco_command1 + dir + "jacoco" + port + ".exec" + jacoco_command2 + jacoco_file, shell=True)
 
 def parse_log_file(file_path):
     log_data = []
@@ -99,6 +100,7 @@ def count_unique_5xx_errors(log_data):
     return unique_stack_traces
 
 if __name__ == '__main__':
+    dir = sys.argv[1]
     # logs = ["features.txt", "languagetool.txt", "ncs.txt", "restcountries.txt", "scs.txt", "genome.txt", "person.txt", "user.txt", "market.txt", "project.txt"]
     logs = ["features.txt"]
     # csvs = ["_11000_1.csv","_11010_1.csv","_11020_1.csv","_11030_1.csv","_11040_1.csv","_11050_1.csv","_11060_1.csv","_11070_1.csv","_11080_1.csv","_11090_1.csv"]
@@ -107,7 +109,7 @@ if __name__ == '__main__':
     full_stack_traces = {}
     errors = {}
 
-    count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1")
+    count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1", dir)
     # count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1")
     # count_coverage("service/jdk8_1/cs/rest/artificial/ncs/", "_11020_1")
     # count_coverage("service/jdk8_1/cs/rest/original/restcountries/", "_11030_1")
@@ -120,7 +122,7 @@ if __name__ == '__main__':
     for log_file in logs:
         print(log_file)
         errors[log_file] = []
-        log_data = parse_log_file(log_file)
+        log_data = parse_log_file(f"{dir}{log_file}")
         unique_stack_traces = count_unique_5xx_errors(log_data)
         unique_5xx_count = 0
         for stack_trace, count in unique_stack_traces.items():
@@ -151,10 +153,10 @@ if __name__ == '__main__':
         print(covered_branch/total_branch*100, covered_line/total_line*100, covered_method/total_method*100)
         result[0] = result[0] + str(covered_method/total_method*100) + ',' + str(covered_branch/total_branch*100) + ',' + str(covered_line/total_line*100) + '\n'
 
-    with open("res.csv", "w") as f:
+    with open(f"{dir}res.csv", "w") as f:
         f.write(result[0])
 
-    with open('errors.json', 'w') as f:
+    with open(f'{dir}errors.json', 'w') as f:
         json.dump(errors, f)
 
 
