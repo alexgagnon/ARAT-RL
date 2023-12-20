@@ -39,7 +39,7 @@ if __name__ == "__main__":
             subprocess.run("tmux new -d -s " + session + " 'timeout " + time_limit + "h python3 run_tool.py " + tool + ' ' + services[i] + ' ' + str(cov_port) + "'", shell=True)
 
         time.sleep(int(time_limit) * 60) # wait for it to run for the timeout period
-        print("Run done, waiting for files to finish writing")
+        print("Run done, waiting for files to finish writing and to dump code coverage results")
         time.sleep(120) # wait for the proxy to finish exporting it's values
         print("Done")
 
@@ -59,4 +59,9 @@ if __name__ == "__main__":
         files = glob.glob('*.txt')
         for file in files:
             if file != 'requirements.txt':
+                shutil.move(file, dir)
+
+        files = glob.glob('*.json')
+        for file in files:
+            if not file.startswith('package'):
                 shutil.move(file, dir)

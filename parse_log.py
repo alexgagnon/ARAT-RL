@@ -25,7 +25,7 @@ def count_coverage(path, port, dir):
 
     jacoco_command2 = jacoco_command2 + ' --csv '
     jacoco_command1 = 'java -jar org.jacoco.cli-0.8.7-nodeps.jar report '
-    jacoco_file = port + '.csv'
+    jacoco_file = dir + port + '.csv'
     subprocess.run(jacoco_command1 + dir + "jacoco" + port + ".exec" + jacoco_command2 + jacoco_file, shell=True)
 
 def parse_log_file(file_path):
