@@ -12,7 +12,7 @@ print(f"Time limit: {time_limit}m")
 if __name__ == "__main__":
     tool = sys.argv[1]
 
-    num_iterations = os.getenv("NUM_ITERATIONS", 5)
+    num_iterations = int(os.getenv("NUM_ITERATIONS", 5))
 
     base_cov_port = 11000
     services = ["features-service", "languagetool", "ncs", "restcountries", "scs", "genome-nexus", "person-controller", "user-management", "market", "project-tracking-system"]
@@ -47,6 +47,7 @@ if __name__ == "__main__":
         subprocess.run("docker stop `docker ps -a -q`", shell=True)
         time.sleep(30)
         subprocess.run("docker rm `docker ps -a -q`", shell=True)
+        print("Cleaning up any remaining tmux sessions")
         for i, name in enumerate(services):
             if service_to_run != name:
                 continue

@@ -3,15 +3,20 @@ import time
 import sys
 import os
 
-def run_service(service_path, class_name):
-    with open(service_path + "/cp.txt", 'r') as f:
-        cp = f.read()
-    with open(service_path + "/run.sh", 'w') as f:
-        f.write("java -Djdk.attach.allowAttachSelf=true " + cov + " -cp target/classes:target/test-classes:" + cp + ' ' + class_name)
-    if name == "market" or name == "project-tracking-system":
-        subprocess.run(". ./java11.env && cd " + service_path + " && tmux new-session -d -s " + name + " 'sh run.sh'", shell=True)
+def run_service(service_path, class_name, service_name, port):
+    use_mockoon = os.getenv("USE_MOCKOON", "False") == "True"
+    if use_mockoon:
+        command = f"tmux new -d -s {service_name}_mockoon 'npx mockoon-cli start --data ./mockoon/{service_name}.json --port {port}'"
+        subprocess.run(command, shell=True)
     else:
-        subprocess.run(". ./java8.env && cd " + service_path + " && tmux new-session -d -s " + name + " 'sh run.sh'", shell=True)
+        with open(service_path + "/cp.txt", 'r') as f:
+            cp = f.read()
+        with open(service_path + "/run.sh", 'w') as f:
+            f.write("java -Djdk.attach.allowAttachSelf=true " + cov + " -cp target/classes:target/test-classes:" + cp + ' ' + class_name)
+        if name == "market" or name == "project-tracking-system":
+            subprocess.run(". ./java11.env && cd " + service_path + " && tmux new-session -d -s " + name + " 'sh run.sh'", shell=True)
+        else:
+            subprocess.run(". ./java8.env && cd " + service_path + " && tmux new-session -d -s " + name + " 'sh run.sh'", shell=True)
 
 
 if __name__ == "__main__":
@@ -29,27 +34,27 @@ if __name__ == "__main__":
         exit()
     else:
         if name == "features-service":
-            run_service("./service/jdk8_1/em/embedded/rest/features-service", "em.embedded.org.javiermf.features.RunServer")
+            run_service("./service/jdk8_1/em/embedded/rest/features-service", "em.embedded.org.javiermf.features.RunServer", name, 50100)
             subprocess.run(
                 "tmux new -d -s features_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50100 -p 30100 -s proxy/features.py'",
                 shell=True)
         elif name == "languagetool":
-            run_service("./service/jdk8_1/em/embedded/rest/languagetool", "em.embedded.org.languagetool.RunServer")
+            run_service("./service/jdk8_1/em/embedded/rest/languagetool", "em.embedded.org.languagetool.RunServer", name, 50101)
             subprocess.run(
                 "tmux new -d -s language_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50101 -p 30101 -s proxy/languagetool.py'",
                 shell=True)
         elif name == "ncs":
-            run_service("./service/jdk8_1/em/embedded/rest/ncs", "em.embedded.org.restncs.RunServer")
+            run_service("./service/jdk8_1/em/embedded/rest/ncs", "em.embedded.org.restncs.RunServer", name, 50102)
             subprocess.run(
                 "tmux new -d -s ncs_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50102 -p 30102 -s proxy/ncs.py'",
                 shell=True)
         elif name == "restcountries":
-            run_service("./service/jdk8_1/em/embedded/rest/restcountries", "em.embedded.eu.fayder.RunServer")
+            run_service("./service/jdk8_1/em/embedded/rest/restcountries", "em.embedded.eu.fayder.RunServer", name, 50106)
             subprocess.run(
                 "tmux new -d -s restcountries_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50106 -p 30106 -s proxy/restcountries.py'",
                 shell=True)
         elif name == "scs":
-            run_service("./service/jdk8_1/em/embedded/rest/scs", "em.embedded.org.restscs.RunServer")
+            run_service("./service/jdk8_1/em/embedded/rest/scs", "em.embedded.org.restscs.RunServer", name, 50108)
             subprocess.run(
                 "tmux new -d -s scs_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50108 -p 30108 -s proxy/scs.py'",
                 shell=True)

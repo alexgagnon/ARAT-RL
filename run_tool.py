@@ -18,7 +18,6 @@ def blackbox(swagger, port, service):
     timeout = time.time() + (int(time_limit) * 60)
     print(f"Timeout: {timeout}")
     while time.time() < timeout:
-        print('here')
         if tool == "evomaster-blackbox":
             subprocess.run("rm -rf " + service, shell=True)
             subprocess.run("java -jar evomaster.jar --blackBox true --bbSwaggerUrl " + swagger + " --bbTargetUrl http://localhost:" + str(port) + " --outputFormat JAVA_JUNIT_4 --maxTime " + time_limit + "h --outputFolder " + service, shell=True)
@@ -60,6 +59,7 @@ if __name__ == "__main__":
     if tool == "evomaster-whitebox":
         subprocess.run("python3 run_service.py " + service + " " + str(port) + " whitebox", shell=True)
     else:
+        print('starting service')
         subprocess.run("python3 run_service.py " + service + " " + str(port) + " blackbox", shell=True)
 
     print("Service started in the background. To check or kill the session, please see README file.")

@@ -66,3 +66,6 @@ chmod u+x get_cov.sh
 # install nodejs and npm dependencies
 sudo snap install node --classic --channel=14
 npm i
+
+# install mockoon
+sudo snap install mockoon
