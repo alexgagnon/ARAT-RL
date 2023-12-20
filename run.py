@@ -12,7 +12,7 @@ print(f"Time limit: {time_limit}m")
 if __name__ == "__main__":
     tool = sys.argv[1]
 
-    num_iterations = os.getenv("NUM_ITERATIONS", 2)
+    num_iterations = os.getenv("NUM_ITERATIONS", 5)
 
     base_cov_port = 11000
     services = ["features-service", "languagetool", "ncs", "restcountries", "scs", "genome-nexus", "person-controller", "user-management", "market", "project-tracking-system"]
