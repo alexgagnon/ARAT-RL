@@ -102,14 +102,14 @@ def count_unique_5xx_errors(log_data):
 if __name__ == '__main__':
     dir = sys.argv[1]
     # logs = ["features.txt", "languagetool.txt", "ncs.txt", "restcountries.txt", "scs.txt", "genome.txt", "person.txt", "user.txt", "market.txt", "project.txt"]
-    logs = ["features.txt"]
+    logs = ["languagetool.txt"]
     # csvs = ["_11000_1.csv","_11010_1.csv","_11020_1.csv","_11030_1.csv","_11040_1.csv","_11050_1.csv","_11060_1.csv","_11070_1.csv","_11080_1.csv","_11090_1.csv"]
-    csvs = ["_11000_1.csv"]
+    csvs = ["_11010_1.csv"]
     result = [""]
     full_stack_traces = {}
     errors = {}
 
-    count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1", dir)
+    count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11010_1", dir)
     # count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1")
     # count_coverage("service/jdk8_1/cs/rest/artificial/ncs/", "_11020_1")
     # count_coverage("service/jdk8_1/cs/rest/original/restcountries/", "_11030_1")
