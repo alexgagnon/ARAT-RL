@@ -3,7 +3,7 @@ import time
 import sys
 import os
 
-use_mockoon = os.getenv("USE_MOCKOON", "False") == "True"
+use_mockoon = os.getenv("USE_MOCKOON", "True") == "True"
 
 def run_service(service_path, class_name, service_name, port):
     if use_mockoon:
