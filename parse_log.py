@@ -119,7 +119,7 @@ if __name__ == '__main__':
     full_stack_traces = {}
     errors = {}
 
-    include_coverage = True
+    include_coverage = False
     
     for log_file in logs:
         print(log_file)
@@ -134,8 +134,8 @@ if __name__ == '__main__':
         result[0] = result[0] + str(unique_5xx_count) + '\n'
 
     if include_coverage:
-        count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1", dir)
-        # count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1", dir)
+        count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1", dir)
         # count_coverage("service/jdk8_1/cs/rest/artificial/ncs/", "_11020_1", dir)
         # count_coverage("service/jdk8_1/cs/rest/original/restcountries/", "_11030_1", dir)
         # count_coverage("service/jdk8_1/cs/rest/artificial/scs/", "_11040_1", dir)
