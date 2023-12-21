@@ -119,7 +119,7 @@ if __name__ == '__main__':
     full_stack_traces = {}
     errors = {}
 
-    include_coverage = True
+    include_coverage = False
     
     for log_file in logs:
         print(log_file)
