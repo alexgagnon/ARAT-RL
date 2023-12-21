@@ -26,7 +26,7 @@ def count_coverage(path, port, dir):
     jacoco_command2 = jacoco_command2 + ' --csv '
     jacoco_command1 = 'java -jar org.jacoco.cli-0.8.7-nodeps.jar report '
     jacoco_file = port + '.csv'
-    subprocess.run(jacoco_command1 + dir + "jacoco" + port + ".exec" + jacoco_command2 + jacoco_file, shell=True)
+    subprocess.run(jacoco_command1 + dir + "jacoco" + port + ".exec" + jacoco_command2 + dir + jacoco_file, shell=True)
 
 def parse_log_file(file_path):
     log_data = []
@@ -101,15 +101,25 @@ def count_unique_5xx_errors(log_data):
 
 if __name__ == '__main__':
     dir = sys.argv[1]
+    name = sys.argv[2]
+    ports = {
+        'features-service': 11000,
+        'languagetool': 11010,
+        'ncs': 11020,
+        'restcountries': 11030,
+        'scs': 11040,
+        'genome': 11050
+    }
+    assert name is not None, "Must provide a service"
     # logs = ["features.txt", "languagetool.txt", "ncs.txt", "restcountries.txt", "scs.txt", "genome.txt", "person.txt", "user.txt", "market.txt", "project.txt"]
-    logs = ["languagetool.txt"]
+    logs = [f"{name}.txt"]
     # csvs = ["_11000_1.csv","_11010_1.csv","_11020_1.csv","_11030_1.csv","_11040_1.csv","_11050_1.csv","_11060_1.csv","_11070_1.csv","_11080_1.csv","_11090_1.csv"]
-    csvs = ["_11010_1.csv"]
+    csvs = [f"_{ports[name]}_1.csv"]
     result = [""]
     full_stack_traces = {}
     errors = {}
 
-    include_coverage = False
+    include_coverage = True
     
     for log_file in logs:
         print(log_file)
@@ -124,16 +134,16 @@ if __name__ == '__main__':
         result[0] = result[0] + str(unique_5xx_count) + '\n'
 
     if include_coverage:
-        # count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11010_1", dir)
-        count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1")
-        # count_coverage("service/jdk8_1/cs/rest/artificial/ncs/", "_11020_1")
-        # count_coverage("service/jdk8_1/cs/rest/original/restcountries/", "_11030_1")
-        # count_coverage("service/jdk8_1/cs/rest/artificial/scs/", "_11040_1")
-        # count_coverage("service/jdk8_2/genome-nexus/", "_11050_1")
-        # count_coverage("service/jdk8_2/person-controller/", "_11060_1")
-        # count_coverage("service/jdk8_2/user-management", "_11070_1")
-        # count_coverage("service/jdk11/market", "_11080_1")
-        # count_coverage("service/jdk11/project-tracking-system", "_11090_1")
+        count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/artificial/ncs/", "_11020_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/original/restcountries/", "_11030_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/artificial/scs/", "_11040_1", dir)
+        # count_coverage("service/jdk8_2/genome-nexus/", "_11050_1", dir)
+        # count_coverage("service/jdk8_2/person-controller/", "_11060_1", dir)
+        # count_coverage("service/jdk8_2/user-management", "_11070_1", dir)
+        # count_coverage("service/jdk11/market", "_11080_1", dir)
+        # count_coverage("service/jdk11/project-tracking-system", "_11090_1", dir)
         for i in range(len(logs)):
             total_branch = 0
             covered_branch = 0
@@ -141,7 +151,7 @@ if __name__ == '__main__':
             covered_line = 0
             total_method = 0
             covered_method = 0
-            with open(csvs[i]) as f:
+            with open(dir + csvs[i]) as f:
                 lines = f.readlines()
                 for line in lines:
                     items = line.split(",")

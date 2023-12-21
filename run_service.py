@@ -41,7 +41,7 @@ if __name__ == "__main__":
         elif name == "languagetool":
             run_service("./service/jdk8_1/em/embedded/rest/languagetool", "em.embedded.org.languagetool.RunServer", name, 50101)
             subprocess.run(
-                "tmux new -d -s language_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50101 -p 30101 -s proxy/languagetool.py'",
+                "tmux new -d -s languagetool_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50101 -p 30101 -s proxy/languagetool.py'",
                 shell=True)
         elif name == "ncs":
             run_service("./service/jdk8_1/em/embedded/rest/ncs", "em.embedded.org.restncs.RunServer", name, 50102)

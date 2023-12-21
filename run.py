@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
         time.sleep(int(time_limit) * 60) # wait for it to run for the timeout period
         print("Run done, waiting for files to finish writing and to dump code coverage results")
-        time.sleep(120) # wait for the proxy to finish exporting it's values
+        time.sleep(120) # wait for the proxy to finish exporting it's values and for code coverage to be dumped
         print("Done")
 
         print("Stop running services...")
