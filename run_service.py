@@ -4,7 +4,7 @@ import sys
 import os
 
 def run_service(service_path, class_name, service_name, port):
-    use_mockoon = os.getenv("USE_MOCKOON", "True") == "True"
+    use_mockoon = os.getenv("USE_MOCKOON", "False") == "True"
     if use_mockoon:
         command = f"tmux new -d -s {service_name}_mockoon 'npx mockoon-cli start --data ./mockoon/{service_name}.json --port {port}'"
         subprocess.run(command, shell=True)
