@@ -3,8 +3,9 @@ import time
 import sys
 import os
 
+use_mockoon = os.getenv("USE_MOCKOON", "False") == "True"
+
 def run_service(service_path, class_name, service_name, port):
-    use_mockoon = os.getenv("USE_MOCKOON", "False") == "True"
     if use_mockoon:
         command = f"tmux new -d -s {service_name}_mockoon 'npx mockoon-cli start --data ./mockoon/{service_name}.json --port {port}'"
         subprocess.run(command, shell=True)
@@ -63,14 +64,18 @@ if __name__ == "__main__":
             time.sleep(30)
             subprocess.run("tmux new -d -s genome-nexus '. java8.env && java " + cov + " -jar ./service/jdk8_2/genome-nexus/web/target/web-0-unknown-version-SNAPSHOT.war'", shell=True)
             subprocess.run(
-                "tmux new -d -s genome_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50110 -p 30110 -s proxy/genome.py'",
+                "tmux new -d -s genome-nexus_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50110 -p 30110 -s proxy/genome.py'",
                 shell=True)
         elif name == "person-controller":
             subprocess.run("docker run -d -p 27019:27017 --name mongodb mongo:latest", shell=True)
             time.sleep(30)
-            subprocess.run("tmux new -d -s person-controller '. java8.env && java " + cov + " -jar ./service/jdk8_2/person-controller/target/java-spring-boot-mongodb-starter-1.0.0.jar'", shell=True)
+            if use_mockoon:
+                command = f"tmux new -d -s {name}_mockoon 'npx mockoon-cli start --data ./mockoon/{name}.json --port 50111'"
+                subprocess.run(command, shell=True)
+            else:
+                subprocess.run("tmux new -d -s person-controller '. ./java8.env && java " + cov + " -jar ./service/jdk8_2/person-controller/target/java-spring-boot-mongodb-starter-1.0.0.jar'", shell=True)
             subprocess.run(
-                "tmux new -d -s person_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50111 -p 30111 -s proxy/person.py'",
+                "tmux new -d -s person-controller_proxy 'mitmproxy --mode reverse:http://0.0.0.0:50111 -p 30111 -s proxy/person.py'",
                 shell=True)
         elif name == "user-management":
             subprocess.run("docker run -d -p 3306:3306 --name mysqldb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=users mysql", shell=True)

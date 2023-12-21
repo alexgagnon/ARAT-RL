@@ -108,7 +108,8 @@ if __name__ == '__main__':
         'ncs': 11020,
         'restcountries': 11030,
         'scs': 11040,
-        'genome': 11050
+        'genome': 11050,
+        'person': 11060
     }
     assert name is not None, "Must provide a service"
     # logs = ["features.txt", "languagetool.txt", "ncs.txt", "restcountries.txt", "scs.txt", "genome.txt", "person.txt", "user.txt", "market.txt", "project.txt"]
@@ -135,12 +136,12 @@ if __name__ == '__main__':
 
     if include_coverage:
         # count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1", dir)
-        count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1", dir)
         # count_coverage("service/jdk8_1/cs/rest/artificial/ncs/", "_11020_1", dir)
         # count_coverage("service/jdk8_1/cs/rest/original/restcountries/", "_11030_1", dir)
         # count_coverage("service/jdk8_1/cs/rest/artificial/scs/", "_11040_1", dir)
         # count_coverage("service/jdk8_2/genome-nexus/", "_11050_1", dir)
-        # count_coverage("service/jdk8_2/person-controller/", "_11060_1", dir)
+        count_coverage("service/jdk8_2/person-controller/", "_11060_1", dir)
         # count_coverage("service/jdk8_2/user-management", "_11070_1", dir)
         # count_coverage("service/jdk11/market", "_11080_1", dir)
         # count_coverage("service/jdk11/project-tracking-system", "_11090_1", dir)
