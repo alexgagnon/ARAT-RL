@@ -650,6 +650,7 @@ def main():
     time_limit = int(os.getenv('TIME_LIMIT')) * 60
     print(f"Time limit: {time_limit}")
     start_time = time.time()
+
     iteration = 0
     max_iterations_without_improvement = 10
 

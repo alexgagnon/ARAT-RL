@@ -167,8 +167,8 @@
             <version>1.0b3</version>
             <exclusions>
               <exclusion>
-                <artifactId>ant</artifactId>
                 <groupId>ant</groupId>
+                <artifactId>ant</artifactId>
               </exclusion>
             </exclusions>
           </dependency>

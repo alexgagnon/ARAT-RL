@@ -15,7 +15,7 @@ python3 -m venv venv
 pip install -r requirements.txt
 
 # Install Docker
-sudo apt-get install -y docker.io
+# sudo apt-get install -y docker.io
 
 # Install Dotnet 6
 wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb

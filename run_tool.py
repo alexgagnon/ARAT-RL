@@ -49,11 +49,13 @@ def blackbox(swagger, port, service):
         options = " http://localhost:" + str(port)
         subprocess.run(run + options, shell=True)
 
+
 if __name__ == "__main__":
     tool = sys.argv[1]
     service = sys.argv[2]
     port = sys.argv[3]
 
+    print(f"{tool} {service} {port}")
     curdir = os.getcwd()
 
     if tool == "evomaster-whitebox":
@@ -63,7 +65,7 @@ if __name__ == "__main__":
         subprocess.run("python3 run_service.py " + service + " " + str(port) + " blackbox", shell=True)
 
     print("Service started in the background. To check or kill the session, please see README file.")
-    time.sleep(30)
+    time.sleep(5)
 
     if service == "features-service":
         if tool == "evomaster-whitebox":
@@ -136,6 +138,12 @@ if __name__ == "__main__":
             blackbox("file://$(pwd)/spec/project.yaml", 30118)
         else:
             blackbox(os.path.join(curdir, "spec/project.yaml"), 30118, service)
+
+    elif service == "github":
+        blackbox(os.path.join(curdir, "spec/api.github.com.2022-11-28.json"), 30120)
+
+    elif service == "openapi":
+        blackbox(os.path.join(curdir, "spec/openapi.yaml"), 3002)
 
     print(
         "Experiments are done. We are safely closing the service now. If you want to run more, please check if there is unclosed session. You can check it with 'tmux ls' command. To close the session, you can run 'tmux kill-sess -t {session name}'")
