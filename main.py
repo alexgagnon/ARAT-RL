@@ -16,7 +16,7 @@ import datetime
 import functools
 from collections import defaultdict
 
-
+assert (os.getenv('TIME_LIMIT')) is not None
 
 def generate_object(object_definition, operation):
     random_object = {}
@@ -641,9 +641,16 @@ def main():
     openapi_spec = prance.ResolvingParser(openapi_spec_file).specification
     operations, parameters_frequency = analyze_information(openapi_spec)
     alpha, gamma, q_table = initialize_q_learning(operations, parameters_frequency)
+    if saved_q_table != None:
+        print(f"Using q-table from {saved_q_table}")
+        with open(saved_q_table, 'r') as file:
+            results = json.load(file)
+            q_table = results['q_table']
 
+    time_limit = int(os.getenv('TIME_LIMIT')) * 60
+    print(f"Time limit: {time_limit}")
     start_time = time.time()
-    time_limit = 5
+
     iteration = 0
     max_iterations_without_improvement = 10
 
@@ -651,6 +658,12 @@ def main():
         elapsed_time = time.time() - start_time
         if elapsed_time >= time_limit:
             break
+
+        # average is around 2000 request per minute, so 2 minutes is 4000 requests
+        if iteration % 4000 == 0:
+            with open(f"{name}-{iteration}.json", 'w') as file:
+                json.dump({"q_table": q_table, "q_value": q_value}, file)
+
         parameter_values = generate_parameter_values(operations)
         selected_operation, selected_parameters = select_operations_and_parameters(operations, parameter_values,
                                                                                    q_table)
@@ -688,8 +701,13 @@ def main():
         adapt_testing_strategy(iteration, max_iterations_without_improvement)
         iteration += 1
 
+    with open(f"{name}.json", 'w') as file:
+        json.dump({"q_table": q_table, "q_value": q_value}, file)
+
 if __name__ == "__main__":
     base_url = sys.argv[2]
+    name = sys.argv[3]
+    saved_q_table = os.getenv('Q_TABLE')
     EPSILON = [0.1]
     ss = [None]
     key_matched = {}

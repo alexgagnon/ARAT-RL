@@ -4,9 +4,10 @@ import json
 import subprocess
 from collections import Counter
 from json import JSONDecodeError
+import sys
 
 
-def count_coverage(path, port):
+def count_coverage(path, port, dir):
     class_files = []
     jacoco_command2 = ''
     subdirs = [x[0] for x in os.walk(path)]
@@ -25,7 +26,7 @@ def count_coverage(path, port):
     jacoco_command2 = jacoco_command2 + ' --csv '
     jacoco_command1 = 'java -jar org.jacoco.cli-0.8.7-nodeps.jar report '
     jacoco_file = port + '.csv'
-    subprocess.run(jacoco_command1 + "jacoco" + port + ".exec" + jacoco_command2 + jacoco_file, shell=True)
+    subprocess.run(jacoco_command1 + dir + "jacoco" + port + ".exec" + jacoco_command2 + dir + jacoco_file, shell=True)
 
 def parse_log_file(file_path):
     log_data = []
@@ -99,26 +100,32 @@ def count_unique_5xx_errors(log_data):
     return unique_stack_traces
 
 if __name__ == '__main__':
-    logs = ["features.txt", "languagetool.txt", "ncs.txt", "restcountries.txt", "scs.txt", "genome.txt", "person.txt", "user.txt", "market.txt", "project.txt"]
-    csvs = ["_11000_1.csv","_11010_1.csv","_11020_1.csv","_11030_1.csv","_11040_1.csv","_11050_1.csv","_11060_1.csv","_11070_1.csv","_11080_1.csv","_11090_1.csv"]
+    dir = sys.argv[1]
+    name = sys.argv[2]
+    ports = {
+        'features-service': 11000,
+        'languagetool': 11010,
+        'ncs': 11020,
+        'restcountries': 11030,
+        'scs': 11040,
+        'genome': 11050,
+        'person': 11060
+    }
+    assert name is not None, "Must provide a service"
+    # logs = ["features.txt", "languagetool.txt", "ncs.txt", "restcountries.txt", "scs.txt", "genome.txt", "person.txt", "user.txt", "market.txt", "project.txt"]
+    logs = [f"{name}.txt"]
+    # csvs = ["_11000_1.csv","_11010_1.csv","_11020_1.csv","_11030_1.csv","_11040_1.csv","_11050_1.csv","_11060_1.csv","_11070_1.csv","_11080_1.csv","_11090_1.csv"]
+    csvs = [f"_{ports[name]}_1.csv"]
     result = [""]
     full_stack_traces = {}
     errors = {}
 
-    count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1")
-    count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1")
-    count_coverage("service/jdk8_1/cs/rest/artificial/ncs/", "_11020_1")
-    count_coverage("service/jdk8_1/cs/rest/original/restcountries/", "_11030_1")
-    count_coverage("service/jdk8_1/cs/rest/artificial/scs/", "_11040_1")
-    count_coverage("service/jdk8_2/genome-nexus/", "_11050_1")
-    count_coverage("service/jdk8_2/person-controller/", "_11060_1")
-    count_coverage("service/jdk8_2/user-management", "_11070_1")
-    count_coverage("service/jdk11/market", "_11080_1")
-    count_coverage("service/jdk11/project-tracking-system", "_11090_1")
+    include_coverage = True
+    
     for log_file in logs:
         print(log_file)
         errors[log_file] = []
-        log_data = parse_log_file(log_file)
+        log_data = parse_log_file(f"{dir}{log_file}")
         unique_stack_traces = count_unique_5xx_errors(log_data)
         unique_5xx_count = 0
         for stack_trace, count in unique_stack_traces.items():
@@ -127,32 +134,42 @@ if __name__ == '__main__':
         print(f'\nTotal unique number of 5xx errors: {unique_5xx_count}')
         result[0] = result[0] + str(unique_5xx_count) + '\n'
 
+    if include_coverage:
+        # count_coverage("service/jdk8_1/cs/rest/original/features-service", "_11000_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/original/languagetool/", "_11010_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/artificial/ncs/", "_11020_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/original/restcountries/", "_11030_1", dir)
+        # count_coverage("service/jdk8_1/cs/rest/artificial/scs/", "_11040_1", dir)
+        # count_coverage("service/jdk8_2/genome-nexus/", "_11050_1", dir)
+        count_coverage("service/jdk8_2/person-controller/", "_11060_1", dir)
+        # count_coverage("service/jdk8_2/user-management", "_11070_1", dir)
+        # count_coverage("service/jdk11/market", "_11080_1", dir)
+        # count_coverage("service/jdk11/project-tracking-system", "_11090_1", dir)
+        for i in range(len(logs)):
+            total_branch = 0
+            covered_branch = 0
+            total_line = 0
+            covered_line = 0
+            total_method = 0
+            covered_method = 0
+            with open(dir + csvs[i]) as f:
+                lines = f.readlines()
+                for line in lines:
+                    items = line.split(",")
+                    if '_COVERED' not in items[6] and '_MISSED' not in items[6]:
+                        covered_branch = covered_branch + int(items[6])
+                        total_branch = total_branch + int(items[6]) + int(items[5])
+                        covered_line = covered_line + int(items[8])
+                        total_line = total_line + int(items[8]) + int(items[7])
+                        covered_method = covered_method + int(items[12])
+                        total_method = total_method + int(items[12]) + int(items[11])
+            print(covered_branch/total_branch*100, covered_line/total_line*100, covered_method/total_method*100)
+            result[0] = result[0] + str(covered_method/total_method*100) + ',' + str(covered_branch/total_branch*100) + ',' + str(covered_line/total_line*100) + '\n'
 
-    for i in range(10):
-        total_branch = 0
-        covered_branch = 0
-        total_line = 0
-        covered_line = 0
-        total_method = 0
-        covered_method = 0
-        with open(csvs[i]) as f:
-            lines = f.readlines()
-            for line in lines:
-                items = line.split(",")
-                if '_COVERED' not in items[6] and '_MISSED' not in items[6]:
-                    covered_branch = covered_branch + int(items[6])
-                    total_branch = total_branch + int(items[6]) + int(items[5])
-                    covered_line = covered_line + int(items[8])
-                    total_line = total_line + int(items[8]) + int(items[7])
-                    covered_method = covered_method + int(items[12])
-                    total_method = total_method + int(items[12]) + int(items[11])
-        print(covered_branch/total_branch*100, covered_line/total_line*100, covered_method/total_method*100)
-        result[0] = result[0] + str(covered_method/total_method*100) + ',' + str(covered_branch/total_branch*100) + ',' + str(covered_line/total_line*100) + '\n'
-
-    with open("res.csv", "w") as f:
+    with open(f"{dir}res.csv", "w") as f:
         f.write(result[0])
 
-    with open('errors.json', 'w') as f:
+    with open(f'{dir}errors.json', 'w') as f:
         json.dump(errors, f)
 
 

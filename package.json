@@ -1,0 +1,23 @@
+{
+  "name": "ARAT-RL",
+  "version": "1.0.0",
+  "description": "This is a replication package of ARAT-RL, which was submitted to ASE 2023.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexgagnon/ARAT-RL.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexgagnon/ARAT-RL/issues"
+  },
+  "homepage": "https://github.com/alexgagnon/ARAT-RL#readme",
+  "dependencies": {
+    "@mockoon/cli": "^6.0.1"
+  }
+}

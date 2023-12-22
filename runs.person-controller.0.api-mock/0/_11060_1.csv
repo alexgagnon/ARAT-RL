@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+JaCoCo Coverage Report,com.mongodb.starter.models,Address,160,3,16,0,24,2,21,1,13,1
+JaCoCo Coverage Report,com.mongodb.starter.models,Person,193,43,22,0,21,16,23,8,12,8
+JaCoCo Coverage Report,com.mongodb.starter.models,Car,103,8,12,0,15,4,14,2,8,2
+JaCoCo Coverage Report,com.mongodb.starter.dtos,AverageAgeDTO,47,0,8,0,11,0,9,0,5,0
+JaCoCo Coverage Report,com.mongodb.starter.repositories,MongoDBPersonRepository,257,26,0,0,30,10,19,3,19,3
+JaCoCo Coverage Report,com.mongodb.starter,ApplicationStarter,0,8,0,0,0,3,0,2,0,2
+JaCoCo Coverage Report,com.mongodb.starter,SpringFoxConfig,0,40,0,0,0,13,0,3,0,3
+JaCoCo Coverage Report,com.mongodb.starter,SpringConfiguration,0,38,0,0,0,7,0,2,0,2
+JaCoCo Coverage Report,com.mongodb.starter.controllers,PersonController,81,16,2,0,17,6,13,3,12,3

@@ -17,6 +17,7 @@ RestlerLogs/
 .DS_Store/
 restler/
 rest-gitlab/
+__pycache__/
 
 cp.txt
 *.log
@@ -28,3 +29,4 @@ faultloadResultsFile.xlsx
 org.jacoco.*
 jacoco_*
 *LOG_PATH*
+node_modules
